@@ -42,9 +42,9 @@ if Gene_Set == "True":
             gene_set_dict = dict.fromkeys(line.split(), {'count': 0})
 
 
-print("Removing duplicates from the dataset...") #takes approximately 30 min for 1 GB file
-cosmic_without_duplicates = cosmic_data_freq(input('Please enter path of COSMIC Mutant file: '))
-cosmic_without_duplicates.to_csv(r'Cosmic_wo_duplicated_samples', index=False, sep='\t')  #converting pandas file to csv
+#print("Removing duplicates from the dataset...") #takes approximately 30 min for 1 GB file
+#cosmic_without_duplicates = cosmic_data_freq(input('Please enter path of COSMIC Mutant file: '))
+#cosmic_without_duplicates.to_csv(r'Cosmic_wo_duplicated_samples', index=False, sep='\t')  #converting pandas file to tsv
 
 
 print('Extracting, selecting and counting COSMIC data...')
@@ -55,7 +55,7 @@ i = 0  #visualize progress
 #transcript counter
 transcript_counter= 0
 multiple_transcripts=[]
-with open("Cosmic_wo_duplicated_samples") as cosmic_db:
+with open("/Users/jacob/Desktop/tcga_CosmicMutantExportFormat_210506.tsv") as cosmic_db:
     for line in cosmic_db:
         data = str(line).split('\t')
         gene = data[0].replace('b\'', '')
