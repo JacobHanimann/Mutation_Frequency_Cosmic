@@ -78,7 +78,7 @@ with open("/Users/jacob/Desktop/tcga_CosmicMutantExportFormat_210506.tsv") as co
         pattern = '[^p\.]+'
         mutation = re.findall(pattern, mutation)[0]
         #saving just the position of the mutation, deleting specific change in the amino acid sequence
-        pattern = '[A-Z]\d+'
+        pattern = '[A-Z]{1}[a-z]{2}\d+'
         match = re.findall(pattern, mutation)
         if match == []:
             continue
@@ -112,6 +112,7 @@ with open("/Users/jacob/Desktop/tcga_CosmicMutantExportFormat_210506.tsv") as co
 
 print('It occured '+str(transcript_counter)+' times where another transcript was identified')
 
+print(gene_mut_count)
 
 print("Calculating frequency of each mutation type...(per gene)")
 
