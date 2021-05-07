@@ -2,7 +2,7 @@
 # Date: 20.11.20
 # Python 2.7
 
-Gene_Set = raw_input('Do you want to analyse a specific gene-set? (True/False):')
+Gene_Set = input('Do you want to analyse a specific gene-set? (True/False):')
 
 
 import csv
