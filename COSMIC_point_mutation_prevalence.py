@@ -37,13 +37,13 @@ start_time = time.time()
 if Gene_Set == "True":
 # create nested dictionary for gene-set panel with value= None:
     gene_set_dict = {}
-    with open(raw_input("Please enter path of gene-set file: ")) as fh:
+    with open(input("Please enter path of gene-set file: ")) as fh:
         for line in fh:
             gene_set_dict = dict.fromkeys(line.split(), {'count': 0})
 
 
 print("Removing duplicates from the dataset...") #takes approximately 30 min for 1 GB file
-cosmic_without_duplicates = cosmic_data_freq(raw_input('Please enter path of COSMIC Mutant file: '))
+cosmic_without_duplicates = cosmic_data_freq(input('Please enter path of COSMIC Mutant file: '))
 cosmic_without_duplicates.to_csv(r'Cosmic_wo_duplicated_samples', index=False, sep='\t')  #converting pandas file to csv
 
 
@@ -176,7 +176,7 @@ for gene, transcript_dict in ordered_gene_mut_freq.items():
 
 # write results in csv file
 i = 0
-name= raw_input('Please name output file (format is "name"_mutation_frequency.csv): ')
+name= input('Please name output file (format is "name"_mutation_frequency.csv): ')
 print('Writing results to .tsv file...')
 with open(name+'_mutation_frequencies.tsv', 'w') as output_file:
     tsv_writer = csv.writer(output_file, delimiter='\t')
@@ -242,7 +242,7 @@ with open("position_ordered_gene_mut_count.txt", "rb") as fp:   #Pickling
 #Classification and visualisation of the data
 
 #Selecting mode: 'Plot' or 'Save'
-mode = raw_input("Do you want to plot the data or save the classification as a csv file? (Plot/Save) ")
+mode = input("Do you want to plot the data or save the classification as a csv file? (Plot/Save) ")
 
 if mode == 'Plot':
     red = 'red'
