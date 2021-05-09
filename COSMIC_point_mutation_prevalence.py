@@ -159,40 +159,27 @@ print('Assign a rank to each mutation...(rank is per transcript, not per gene)')
 #Rank is per transcript and not per gene
 #iterating through list and assigning the ranking so that value2 of dict is a list of freq and rank number
 #Syntax is: key1= gene, key2= transcript_dict, key3= mutation_dict, "rank number" value3 = [relative frequency, rank number,relativ rank]
-
+new_ordered_gene_mut_freq = copy.deepcopy(ordered_gene_mut_freq)
 for gene, transcript_dict in ordered_gene_mut_freq.items():
     s= 0 #total rank count
     for transcript, mutation_dict in transcript_dict.items():
         freq_value_before = 0 #to compare the frequency to the last frequency to decide if the rank should be the same or higher
         i=1
         for mutation in mutation_dict.keys():
-            ordered_gene_mut_freq[gene][transcript][mutation]= [ordered_gene_mut_freq[gene][transcript][mutation]]
-            if ordered_gene_mut_freq[gene][transcript][mutation][0] < freq_value_before: #compare to previous frequency
+            new_ordered_gene_mut_freq[gene][transcript][mutation]= [new_ordered_gene_mut_freq[gene][transcript][mutation]]
+            if new_ordered_gene_mut_freq[gene][transcript][mutation][0] < freq_value_before: #compare to previous frequency
                 i +=1
-                ordered_gene_mut_freq[gene][transcript][mutation].append(i) #append rank
+                new_ordered_gene_mut_freq[gene][transcript][mutation].append(i) #append rank
             else:
-                ordered_gene_mut_freq[gene][transcript][mutation].append(i) #the frequency is the same as the previous one
-            freq_value_before = ordered_gene_mut_freq[gene][transcript][mutation][0]
+                new_ordered_gene_mut_freq[gene][transcript][mutation].append(i) #the frequency is the same as the previous one
+            freq_value_before = new_ordered_gene_mut_freq[gene][transcript][mutation][0]
             s +=1
         rank_count= s #save total rank number for a gene
 
-        print(mutation_dict)
-        print(type(mutation_dict))
-#calculate and append relative rank number
-        #for mutation in mutation_dict.keys():
-        #    ordered_gene_mut_freq[gene][transcript][mutation].append(round(ordered_gene_mut_freq[gene][transcript][mutation][1] / float(rank_count),3))
-        #    ordered_gene_mut_freq[gene][transcript]['rank count']= rank_count #append total rank number to the transcript
-
-new_ordered_gene_mut_freq = copy.deepcopy(ordered_gene_mut_freq)
-for gene, transcript_dict in ordered_gene_mut_freq.items():
-    for transcript, mutation_dict in transcript_dict.items():
         for mutation in mutation_dict.keys():
-            new_ordered_gene_mut_freq[gene][transcript][mutation].append(round(ordered_gene_mut_freq[gene][transcript][mutation][1] / float(rank_count),3))
+            new_ordered_gene_mut_freq[gene][transcript][mutation].append(round(new_ordered_gene_mut_freq[gene][transcript][mutation][1] / float(rank_count),3))
             new_ordered_gene_mut_freq[gene][transcript]['rank count']= rank_count #append total rank number to the transcript
 
-
-print(ordered_gene_mut_freq)
-print(ordered_gene_mut_count)
 
 # write results in csv file
 i = 0
