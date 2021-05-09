@@ -121,18 +121,24 @@ gene_mut_freq = copy.deepcopy(gene_mut_count) #copy dictionary as independent di
 #iterating through 3x nested dictionary to calculate the relative frequency of each mutation and saving results in new dict.
 #Syntax is: key1= gene, key2= transcript,count, key3=mutation, value3=relative frequency of each mutation
 for gene, transcript_list in gene_mut_count.items():
-    for transcript,mutation_list in transcript_list.items()[1:]: #starting at second because value2 of count is an integer
+    print(transcript_list)
+    for transcript,mutation_list in transcript_list.items(): #starting at second because value2 of count is an integer
+        if transcript=='count':
+            continue
         for mutation,count in mutation_list.items():
             gene_mut_freq[gene][transcript][mutation]= round(float(count)/ (gene_mut_count[gene]['count']),3)
     gene_mut_freq[gene]['count'] = gene_mut_count[gene]['count']
 
+print(gene_mut_freq)
 
 print('Reordering the mutations by descending frequency...') #creating new sorted dictionary
 ordered_gene_mut_freq = {}
 #Syntax is: key1= gene, key2= transcript dict, key3= mutation_dict, value3= relativ mutation frequencies
 for gene in gene_mut_freq:
     ordered_gene_mut_freq[gene] = {} #dict must be created before inserting an object to it
-    for transcript,mutation_dict in gene_mut_freq[gene].items()[1:]: #starting at second index because value2 of count is an integer
+    for transcript,mutation_dict in gene_mut_freq[gene].items(): #starting at second index because value2 of count is an integer
+        if transcript=='count':
+            continue
         ordered = OrderedDict(sorted(mutation_dict.items(), key=lambda i: i[1], reverse=True))
         ordered_gene_mut_freq[gene][transcript] = ordered
 
@@ -142,7 +148,9 @@ ordered = 0
 # Syntax is: key1= gene, key2= transcript dict, key3= mutation_dict, value3= relativ mutation frequencies
 for gene in gene_mut_count:
     ordered_gene_mut_count[gene] = {}  # dict must be created before inserting an object to it
-    for transcript, mutation_dict in gene_mut_count[gene].items()[1:]:  # starting at second index because value2 of count is an integer
+    for transcript, mutation_dict in gene_mut_count[gene].items():  # starting at second index because value2 of count is an integer
+        if transcript=='count':
+            continue
         ordered = OrderedDict(sorted(mutation_dict.items(), key=lambda i: i[1], reverse=True))
         ordered_gene_mut_count[gene][transcript] = ordered
 
@@ -168,12 +176,23 @@ for gene, transcript_dict in ordered_gene_mut_freq.items():
             s +=1
         rank_count= s #save total rank number for a gene
 
-
+        print(mutation_dict)
+        print(type(mutation_dict))
 #calculate and append relative rank number
-        for mutation in mutation_dict.keys():
-            ordered_gene_mut_freq[gene][transcript][mutation].append(round(ordered_gene_mut_freq[gene][transcript][mutation][1] / float(rank_count),3))
-            ordered_gene_mut_freq[gene][transcript]['rank count']= rank_count #append total rank number to the transcript
+        #for mutation in mutation_dict.keys():
+        #    ordered_gene_mut_freq[gene][transcript][mutation].append(round(ordered_gene_mut_freq[gene][transcript][mutation][1] / float(rank_count),3))
+        #    ordered_gene_mut_freq[gene][transcript]['rank count']= rank_count #append total rank number to the transcript
 
+new_ordered_gene_mut_freq = copy.deepcopy(ordered_gene_mut_freq)
+for gene, transcript_dict in ordered_gene_mut_freq.items():
+    for transcript, mutation_dict in transcript_dict.items():
+        for mutation in mutation_dict.keys():
+            new_ordered_gene_mut_freq[gene][transcript][mutation].append(round(ordered_gene_mut_freq[gene][transcript][mutation][1] / float(rank_count),3))
+            new_ordered_gene_mut_freq[gene][transcript]['rank count']= rank_count #append total rank number to the transcript
+
+
+print(ordered_gene_mut_freq)
+print(ordered_gene_mut_count)
 
 # write results in csv file
 i = 0
@@ -187,10 +206,10 @@ with open(name+'_mutation_frequencies.tsv', 'w') as output_file:
         gene_count = gene_mut_count[gene]['count'] #Gene count
         for transcript, mutation_dict in transcript_dict.items():
             for mutation,count in mutation_dict.items():
-                relative_frequency = ordered_gene_mut_freq[gene][transcript][mutation][0]
-                rank = ordered_gene_mut_freq[gene][transcript][mutation][1]
-                total_ranks = ordered_gene_mut_freq[gene][transcript]['rank count']
-                relative_position = round(1-ordered_gene_mut_freq[gene][transcript][mutation][2],3)
+                relative_frequency = new_ordered_gene_mut_freq[gene][transcript][mutation][0]
+                rank = new_ordered_gene_mut_freq[gene][transcript][mutation][1]
+                total_ranks = new_ordered_gene_mut_freq[gene][transcript]['rank count']
+                relative_position = round(1-new_ordered_gene_mut_freq[gene][transcript][mutation][2],3)
                 rank_score = round((relative_frequency+rank),3)
                 tsv_writer.writerow([mutation, gene, transcript, count, gene_count,relative_frequency,rank,rank_score, total_ranks,relative_position])
         i += 1
@@ -209,7 +228,7 @@ file.close()
 print(str(number_of_lines) + " mutations were identified.")
 
 
-print('Cashing data in textfiles...')
+print('Caching data in textfiles...')
 
 with open("position_gene_mut_count.txt", "wb") as fp:   #Pickling
     pickle.dump(gene_mut_count, fp)
@@ -234,7 +253,7 @@ with open("position_gene_mut_freq.txt", "rb") as fp:   #Pickling
     gene_mut_freq = pickle.load(fp)
 
 with open("position_ordered_gene_mut_freq.txt", "rb") as fp:   #Pickling
-    ordered_gene_mut_freq = pickle.load(fp)
+    new_ordered_gene_mut_freq = pickle.load(fp)
 
 with open("position_ordered_gene_mut_count.txt", "rb") as fp:   #Pickling
     ordered_gene_mut_count = pickle.load(fp)
@@ -274,15 +293,17 @@ iteration = 1
 for gene, transcript_dict in ordered_gene_mut_count.items(): #iterating through the list to extract values
     print('Mutation entries for '+gene+': '+str(gene_mut_count[gene]['count']))
     for transcript in transcript_dict.keys():
-        mutation = ordered_gene_mut_freq[gene][transcript].keys()[:-1]
+        mutation = new_ordered_gene_mut_freq[gene][transcript].keys()
+        if transcript == 'count':
+            continue
         frequency = []
         col = []  # list to store classification for plot
         frequency_tree =[] #for trainingdata set, has to be in the format [[1],[2],[2]] for example
         count = [] #extracting the discrete count of each mutation, will be used for labeling the plot
         wholecount = [] #saving the discrete count of each mutation, will be used for classification
-        for i in range(0, (len(ordered_gene_mut_freq[gene][transcript].values()) - 1)):
-            frequency.append(ordered_gene_mut_freq[gene][transcript].values()[i][0]) #frequency extraction
-            frequency_tree.append([ordered_gene_mut_freq[gene][transcript].values()[i][0]]) #data for isolation forest
+        for i in range(0, (len(new_ordered_gene_mut_freq[gene][transcript].values()) - 1)):
+            frequency.append(new_ordered_gene_mut_freq[gene][transcript].values()[i][0]) #frequency extraction
+            frequency_tree.append([new_ordered_gene_mut_freq[gene][transcript].values()[i][0]]) #data for isolation forest
             total_count = len(ordered_gene_mut_count[gene][transcript].keys()) #for count label per mutation
             wholecount.append(ordered_gene_mut_count[gene][transcript].values()[i]) #save count of each mutation
             steps = int(0.05 *total_count+1) #steps which should be displayed as labels
