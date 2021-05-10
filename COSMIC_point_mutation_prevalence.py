@@ -184,7 +184,7 @@ name= input('Please name output file (format is "name"_mutation_frequency.csv): 
 print('Writing results to .tsv file...')
 with open(name+'_mutation_frequencies.tsv', 'w') as output_file:
     tsv_writer = csv.writer(output_file, delimiter='\t')
-    tsv_writer.writerow(['mutation', 'gene', 'transcript', 'mutation_count', 'Gene_count', 'relative_frequency', 'rank', 'rank_score', 'total_ranks', 'relative_position'])
+    tsv_writer.writerow(['mutation', 'gene', 'transcript', 'mutation_count', 'gene_count', 'rel_frequency', 'rank', 'rank_score', 'total_ranks', 'rel_position'])
 #iterate through the gene_mut_count dictionary while also extracting from the gene_count_freq dictionary
     for gene, transcript_dict in ordered_gene_mut_count.items():
         gene_count = gene_mut_count[gene]['count'] #Gene count
@@ -403,8 +403,8 @@ if mode =='Save':
 
 
     #add column to frequency file
-    header_of_new_col = 'Classification'
-    add_column_in_csv(name+'_mutation_frequencies.tsv', name+'_frequencies_namitag_Cdx_w_classification.csv', lambda row, line_num: row.append(header_of_new_col)
+    header_of_new_col = 'classification'
+    add_column_in_csv(name+'_mutation_frequencies.tsv', name+'_frequencies_classification.csv', lambda row, line_num: row.append(header_of_new_col)
                                                                 if line_num == 1 else row.append(hotspot_classification[line_num - 2]))
     print('Finished')
 
