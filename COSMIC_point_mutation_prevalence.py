@@ -112,7 +112,6 @@ with open("/Users/jacob/Desktop/tcga_CosmicMutantExportFormat_210506.tsv") as co
 
 print('It occured '+str(transcript_counter)+' times where another transcript was identified')
 
-print(gene_mut_count)
 
 print("Calculating frequency of each mutation type...(per gene)")
 
@@ -121,7 +120,6 @@ gene_mut_freq = copy.deepcopy(gene_mut_count) #copy dictionary as independent di
 #iterating through 3x nested dictionary to calculate the relative frequency of each mutation and saving results in new dict.
 #Syntax is: key1= gene, key2= transcript,count, key3=mutation, value3=relative frequency of each mutation
 for gene, transcript_list in gene_mut_count.items():
-    print(transcript_list)
     for transcript,mutation_list in transcript_list.items(): #starting at second because value2 of count is an integer
         if transcript=='count':
             continue
@@ -129,7 +127,6 @@ for gene, transcript_list in gene_mut_count.items():
             gene_mut_freq[gene][transcript][mutation]= round(float(count)/ (gene_mut_count[gene]['count']),3)
     gene_mut_freq[gene]['count'] = gene_mut_count[gene]['count']
 
-print(gene_mut_freq)
 
 print('Reordering the mutations by descending frequency...') #creating new sorted dictionary
 ordered_gene_mut_freq = {}
@@ -288,14 +285,14 @@ for gene, transcript_dict in ordered_gene_mut_count.items(): #iterating through 
         frequency_tree =[] #for trainingdata set, has to be in the format [[1],[2],[2]] for example
         count = [] #extracting the discrete count of each mutation, will be used for labeling the plot
         wholecount = [] #saving the discrete count of each mutation, will be used for classification
-        for i in range(0, (len(new_ordered_gene_mut_freq[gene][transcript].values()) - 1)):
-            frequency.append(new_ordered_gene_mut_freq[gene][transcript].values()[i][0]) #frequency extraction
-            frequency_tree.append([new_ordered_gene_mut_freq[gene][transcript].values()[i][0]]) #data for isolation forest
+        for i in range(0, (len(new_ordered_gene_mut_freq[gene][transcript].values()))):
+            frequency.append(list(new_ordered_gene_mut_freq[gene][transcript].values())[i]) #frequency extraction
+            frequency_tree.append([list(new_ordered_gene_mut_freq[gene][transcript].values())[i]]) #data for isolation forest
             total_count = len(ordered_gene_mut_count[gene][transcript].keys()) #for count label per mutation
-            wholecount.append(ordered_gene_mut_count[gene][transcript].values()[i]) #save count of each mutation
+            wholecount.append(list(ordered_gene_mut_count[gene][transcript].values())[i]) #save count of each mutation
             steps = int(0.05 *total_count+1) #steps which should be displayed as labels
             if (i % steps == 0):
-                count.append(ordered_gene_mut_count[gene][transcript].values()[i]) #get count of mutation
+                count.append(list(ordered_gene_mut_count[gene][transcript].values())[i]) #get count of mutation
 
         remove_value= min(frequency_tree) #removing unwanted data for trainingdata set
         number = 0
@@ -376,8 +373,8 @@ for gene, transcript_dict in ordered_gene_mut_count.items(): #iterating through 
                plt.xticks(x_pos_anot, count) #labeling
                countred = sum(map(lambda x: x == 'red', col)) #print the mutation names, get index
                countgreen = sum(map(lambda x: x == 'green', col)) #get index
-               print('red'+str(mutation[0:countred]))
-               print('green' + str(mutation[countred:(countred+countgreen)]))
+               #print('red'+str(mutation[0:countred]))
+               #print('green' + str(mutation[countred:(countred+countgreen)]))
                plt.show()
                iteration +=1
            else:
