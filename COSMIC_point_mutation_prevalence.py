@@ -60,7 +60,6 @@ multiple_transcripts=[]
 with open(location_mutant_file) as cosmic_db:
     for line in cosmic_db:
         data = str(line).split('\t')
-        print(data)
         gene = data[0].replace('b\'', '')
         if "_" in gene:
             continue
@@ -77,16 +76,18 @@ with open(location_mutant_file) as cosmic_db:
             continue
         if mutation == 'p.?': #filter unknown mutations
             continue
+        if not "p." in mutation:
+            continue
         # deleting the "p." string before mutation name
-        pattern = '[^p\.]+'
-        mutation = re.findall(pattern, mutation)[0]
         #saving just the position of the mutation, deleting specific change in the amino acid sequence
         pattern = '[A-Z]{1}[a-z]{2}\d+'
         match = re.findall(pattern, mutation)
         if match == []:
             continue
+
         else:
             mutation= match[0]
+            print(mutation)
 
 
     #counting number of mutation for each gene and each transcript resulting in a 3x nested dictionary: gene_mut_count
