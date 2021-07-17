@@ -1,6 +1,8 @@
 # Author: Jacob Haninmann
 # Date: 20.11.20
-# Python 2.7
+# Python 3.8
+
+location_mutant_file = "/Users/jacob/Desktop/tcga_CosmicCompleteTargetedScreensMutantExport_210717.tsv"
 
 Gene_Set = input('Do you want to analyse a specific gene-set? (True/False):')
 
@@ -55,9 +57,10 @@ i = 0  #visualize progress
 #transcript counter
 transcript_counter= 0
 multiple_transcripts=[]
-with open("/Users/jacob/Desktop/tcga_CosmicMutantExportFormat_210506.tsv") as cosmic_db:
+with open(location_mutant_file) as cosmic_db:
     for line in cosmic_db:
         data = str(line).split('\t')
+        print(data)
         gene = data[0].replace('b\'', '')
         if "_" in gene:
             continue
