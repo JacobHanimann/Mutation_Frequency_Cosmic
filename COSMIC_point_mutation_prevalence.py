@@ -61,6 +61,8 @@ with open(location_mutant_file) as cosmic_db:
     for line in cosmic_db:
         data = str(line).split('\t')
         gene = data[0].replace('b\'', '')
+        if gene=="KRAS":
+            print(data)
         if "_" in gene:
             continue
         if Gene_Set=="True": #selecting for gene-set
@@ -68,8 +70,8 @@ with open(location_mutant_file) as cosmic_db:
                 continue
         transcript= data[1]
         snp = data[27]  # SNP info
-        if snp == 'y':  # skip SNPs
-            continue
+        if snp == 'y':  # skip or not SNPs
+            pass
         # Counting mutations in nested gene_set dictionary
         mutation = data[20]  # AA mutation
         if mutation == '':  # filter unknown mutations
@@ -87,7 +89,6 @@ with open(location_mutant_file) as cosmic_db:
 
         else:
             mutation= match[0]
-            print(mutation)
 
 
     #counting number of mutation for each gene and each transcript resulting in a 3x nested dictionary: gene_mut_count
