@@ -2,7 +2,7 @@
 # Date: 20.11.20
 # Python 3.8
 
-location_mutant_file = "/Users/jacob/Desktop/tcga_CosmicCompleteTargetedScreensMutantExport_210717.tsv"
+location_mutant_file = "/Users/jacob/Documents/USZ_Praktikum/MTP_projects/tcga_CosmicCompleteTargetedScreensMutantExport_210717.tsv"
 
 Gene_Set = input('Do you want to analyse a specific gene-set? (True/False):')
 
@@ -61,8 +61,6 @@ with open(location_mutant_file) as cosmic_db:
     for line in cosmic_db:
         data = str(line).split('\t')
         gene = data[0].replace('b\'', '')
-        if gene=="KRAS":
-            print(data)
         if "_" in gene:
             continue
         if Gene_Set=="True": #selecting for gene-set
@@ -334,6 +332,10 @@ for gene, transcript_dict in ordered_gene_mut_count.items(): #iterating through 
             switch_green = 0  #isolation forest sometimes classifies data clearly wrong (issue of the method apparently): switch will be activated so that after the first classification of green, only green and blue can follow to the end
             switch_blue = 0  # isolation forest sometimes classifies data clearly wrong: switch will be activated so that after the first classification of blue, only blue can follow to the end
             for val in outlier_score:
+               #print("val", val)
+               #print("outlier_score", outlier_score)
+               #print("frequencz_b", b)
+               #print('frequency', frequency)
                b += 1 #val score is corresponding for wholecount[b]
                if outlier_score[b] <0 and outlier_classification[b] <0 and frequency[b] >= (10*statistics.median(frequency)): #double check that both prediction calculated the same score for a mutation
                     if val <= 0.85 *min(outlier_score) and switch_green==0 and switch_blue==0: #to be a hotspot, the discrete count has to be 20 or more and be in the top 33% of outliners
